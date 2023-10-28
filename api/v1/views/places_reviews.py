@@ -37,7 +37,7 @@ def delete_review(review_id):
     obj = storage.get(Review, review_id)
     if obj is None:
         return jsonify(error='Not found'), 404
-    obj.delete(obj)
+    storage.delete(obj)
     storage.save()
     return jsonify({}), 200
 
