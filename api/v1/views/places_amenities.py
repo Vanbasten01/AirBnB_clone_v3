@@ -33,7 +33,7 @@ def delete_places_amenities(place_id, amenity_id):
         abort(404)
     if amenity not in place.amenities:
         abort(404)
-    place.amenities.delete(amenity)
+    place.amenities.remove(amenity)
     storage.save()
     return jsonify({}), 200
 
