@@ -38,7 +38,7 @@ def delete_review(review_id):
     if obj is None:
         abort(404)
     obj.delete()
-    strage.save()
+    storage.save()
     return jsonify({}), 200
 
 
