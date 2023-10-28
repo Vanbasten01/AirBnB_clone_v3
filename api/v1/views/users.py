@@ -10,7 +10,7 @@ from models.user import User
 def users():
     '''Retrieve all users'''
     objects = [user.to_dict() for user in User.all()]
-    return jsonify(users)
+    return jsonify(objects)
 
 
 @app_views.route('/users/<user_id>', methods=['GET'], strict_slashes=False)
@@ -60,5 +60,5 @@ def update_user(user_id):
     for key, value in body.items():
         if key not in ignored_keys:
             setattr(obj, key, value)
-    user.save()
+    obj.save()
     return jsonify(obj.to_dict()), 200
