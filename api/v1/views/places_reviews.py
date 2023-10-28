@@ -15,7 +15,7 @@ def reviews(place_id):
     '''Retrieve all reviews'''
     place = storage.get(Place, place_id)
     if place is None:
-        abort(404)
+        return jsonify(error='Not found'), 404
     rev = [review.to_dict() for review in place.reviews]
     return jsonify(rev)
 
@@ -25,7 +25,7 @@ def get_review(review_id):
     '''Retrieve a review'''
     obj = storage.get(Review, review_id)
     if obj is None:
-        abort(404)
+        return jsonify(error='Not found'), 404
     return jsonify(obj.to_dict())
 
 
@@ -36,7 +36,7 @@ def delete_review(review_id):
     '''Delete a review'''
     obj = storage.get(Review, review_id)
     if obj is None:
-        abort(404)
+        return jsonify(error='Not found'), 404
     obj.delete()
     storage.save()
     return jsonify({}), 200
@@ -49,17 +49,17 @@ def post_review(place_id):
     '''Create a review'''
     place = storage.get(Place, place_id)
     if place is None:
-        abort(404)
+        return jsonify(error='Not found'), 404
     if not request.is_json:
-        abort(400, 'Not a JSON')
+        return jsonify(error='Not a JSON'), 400
     body = request.get_json()
     if 'user_id' not in body:
-        abort(400, 'Missing user_id')
+        return jsonify(error='Missing user_id'), 400
     ob_user = storage.get(User, body['user_id'])
     if ob_user is None:
-        abort(404)
+        return jsonify(error='Not found'), 404
     if 'text' not in body:
-        abort(400, 'Missing text')
+        return jsonify(error='Missing text'), 400
     body['place_id'] = place_id
     new_rev = Review(**body)
     new_rev.save()
@@ -71,9 +71,9 @@ def update(review_id):
     '''Update a review'''
     obj = storage.get(Review, review_id)
     if obj is None:
-        abort(404)
+        return jsonify(error='Not found'), 404
     if not request.is_json:
-        abort(400, 'Not a JSON')
+        return jsonify(error='Not a JSON'), 400
     body = request.get_json()
     ignored_keys = ['id', 'user_id', 'place_id', 'created_at', 'updated_at']
     for key, value in body.items():
