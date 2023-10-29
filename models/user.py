@@ -15,7 +15,7 @@ class User(BaseModel, Base):
     if models.storage_t == "db":
         __tablename__ = "users"
         email = Column(String(128), nullable=False)
-        password = Column(String(128), nullable=False)
+        _password = Column("password", String(128), nullable=False)
         first_name = Column(String(128), nullable=True)
         last_name = Column(String(128), nullable=True)
         places = relationship("Place", backref="user")
@@ -33,9 +33,9 @@ class User(BaseModel, Base):
     @property
     def password(self):
         """password's Getter"""
-        return self.__password
+        return self._password
 
     @password.setter
     def password(self, pwd):
         """Setter for password"""
-        self.__password = hashlib.md5(pwd.encode()).hexdigest()
+        self._password = hashlib.md5(pwd.encode()).hexdigest()
