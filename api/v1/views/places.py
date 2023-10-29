@@ -87,11 +87,11 @@ def search_place():
     if not request.is_json:
         abort(400, 'Not a JSON')
     body = request.get_json()
+    all_places = [obj for obj in storage.all(Place).values()]
+    places = []
     states = body.get('states', [])
     cities = body.get('cities', [])
     amenities = body.get('amenities', [])
-    all_places = [obj for obj in storage.all(Place).values()]
-    places = []
     for state_id in states:
         state = storage.get(State, state_id)
         if state:
@@ -101,11 +101,11 @@ def search_place():
         if city:
             places.extend(city.places)
     if amenities:
-        ameni_ties = set(amenities)
-        places = [
-                place for place in places if ameni_ties.issubset(
-                    place.amenity_ids
-                    )
+        amenity_ids = [
+                storage.get(Amenity, amen_ity).id for amen_ity in amenities
                 ]
+        places = [place for place in places if set(
+            amenity_ids).issubset(place.amenity_ids)
+            ]
     res = [place.to_dict() for place in places]
     return jsonify(res)
